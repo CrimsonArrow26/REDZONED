@@ -32,7 +32,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
       .to(
         center,
         {
-          scale: 1.15,
+          scale: 1.6,
           duration: 0.4,
           yoyo: true,
           repeat: 1,
@@ -44,7 +44,7 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
       .to(
         lineH,
         {
-          scaleX: 1.2, // 5% larger than the center circle
+          scaleX: 1.655, // 5% larger than the center circle
           duration: 0.6,
           ease: "power2.out"
         },

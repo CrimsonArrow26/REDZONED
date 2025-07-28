@@ -15,14 +15,14 @@ function App() {
 
   return (
     <>
-      {/* Intro Animation */}
+
       {!introDone && <IntroAnimation onComplete={() => setIntroDone(true)} />}
 
-      {/* Main App */}
+
       {introDone && (
         <Router>
           <Navbar />
-          {/* Spacer for fixed navbar */}
+
           <div style={{ height: "64px", width: "100%" }} aria-hidden="true" />
 
           <Routes>
@@ -43,7 +43,7 @@ function App() {
             />
           </Routes>
 
-          <Footer /> {/* ✅ Add Footer here */}
+          <Footer /> 
         </Router>
       )}
     </>

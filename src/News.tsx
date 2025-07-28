@@ -19,7 +19,7 @@ const News: React.FC = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch news from backend (Flask API)
+
   const fetchNews = async () => {
     try {
       const res = await fetch("http://127.0.0.1:5000/api/news");

@@ -1,17 +1,16 @@
-/* === Base Styling for HomePage === */
+
 body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background: #f8fafc;
   }
   
-  /* Map + Card container fix */
   .map-card-container {
     overflow: hidden;
     border-radius: 1.5rem;
   }
   
-  /* Responsive Grid for map and details card */
+
   .map-card-grid {
     height: 600px;
     display: grid;
@@ -23,7 +22,7 @@ body {
     }
   }
   
-  /* Leaflet Map fixes */
+
   .leaflet-container {
     width: 100%;
     height: 100%;
@@ -32,7 +31,7 @@ body {
     overflow: hidden;
   }
   
-  /* === Map Legend styles === */
+
   .legend-container {
     background: white;
     padding: 8px 12px;
@@ -60,7 +59,7 @@ body {
     background: green;
   }
   
-  /* === Radar pulse markers (for animated map markers) === */
+
   .radar-pulse-marker {
     position: relative;
     width: 32px;
@@ -110,7 +109,7 @@ body {
     }
   }
   
-  /* === Scrollbar Styling for Map Side Cards === */
+
   .custom-scrollbar {
     max-height: 300px;
     overflow-y: auto;
@@ -126,7 +125,7 @@ body {
     background: rgba(0,0,0,0.4);
   }
   
-  /* === Hero section glow animation (used for glowing backgrounds) === */
+
   .animate-pulse {
     animation: pulse-bg 3s ease-in-out infinite;
   }

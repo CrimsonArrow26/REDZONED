@@ -44,7 +44,7 @@
   
   .line.h {
     position: absolute;
-    width: 100px; /* same as center */
+    width: 100px; 
     height: 2px;
     background: #ffc5c5;
     transform: scaleX(0);
