@@ -1,26 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Shield, AlertTriangle, Menu, X } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "../supabaseClient"; // Adjust path as needed
+import { motion } from "framer-motion";
+import { supabase } from "../supabaseClient";
 
 const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false); // ✅ New loading flag
   const location = useLocation();
   const isAuthPage = location.pathname.startsWith("/auth");
 
-  // Supabase authentication state check and listener
   useEffect(() => {
     // Check auth once on mount
     supabase.auth.getUser().then(({ data: { user } }) => {
       setIsAuthenticated(!!user);
+      setAuthChecked(true); // ✅ Mark check complete
     });
-    // Listen for auth events
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+
+    // Listen for auth state changes
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setIsAuthenticated(!!session?.user);
+      setAuthChecked(true);
     });
-    // Clean up on unmount
+
     return () => subscription.unsubscribe();
   }, []);
 
@@ -31,7 +36,6 @@ const Navbar: React.FC = () => {
     { name: "Community", path: "/community" },
   ];
 
-  // Profile SVG Icon (Red/White Themed)
   const ProfileIcon = (
     <svg
       width="28"
@@ -43,9 +47,31 @@ const Navbar: React.FC = () => {
       className="text-red-600 bg-white rounded-full p-1 border border-red-200"
       style={{ boxShadow: "0 0 3px rgba(220,38,38,0.10)" }}
     >
-      <circle cx="14" cy="10" r="5.5" fill="white" stroke="#DC2626" strokeWidth="1.6"/>
-      <ellipse cx="14" cy="20" rx="8.5" ry="5" fill="white" stroke="#DC2626" strokeWidth="1.6"/>
-      <circle cx="14" cy="10" r="3.3" fill="#DC2626" stroke="white" strokeWidth="1.2"/>
+      <circle
+        cx="14"
+        cy="10"
+        r="5.5"
+        fill="white"
+        stroke="#DC2626"
+        strokeWidth="1.6"
+      />
+      <ellipse
+        cx="14"
+        cy="20"
+        rx="8.5"
+        ry="5"
+        fill="white"
+        stroke="#DC2626"
+        strokeWidth="1.6"
+      />
+      <circle
+        cx="14"
+        cy="10"
+        r="3.3"
+        fill="#DC2626"
+        stroke="white"
+        strokeWidth="1.2"
+      />
     </svg>
   );
 
@@ -73,7 +99,7 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 className={({ isActive }) =>
-                  `px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                  `px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${
                     isActive
                       ? "text-red-600 bg-red-50"
                       : "text-gray-700 hover:text-red-600 hover:bg-red-50"
@@ -84,31 +110,22 @@ const Navbar: React.FC = () => {
               </NavLink>
             ))}
 
-            {/* Animate Presence: Register or Profile */}
-            <AnimatePresence mode="wait">
-              {!isAuthPage && (
+            {/* Profile/Register button */}
+            {!isAuthPage &&
+              authChecked && ( // ✅ Don't render until auth status is known
                 isAuthenticated ? (
-                  <motion.div
-                    key="profile"
-                    initial={{ opacity: 0, scale: 0.85, y: -8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.92, y: -8 }}
-                    transition={{ duration: 0.22 }}
+                  <NavLink
+                    to="/profile"
+                    className="p-0 m-0"
+                    aria-label="User Profile"
                   >
-                    <NavLink
-                      to="/profile"
-                      className="p-0 m-0"
-                      aria-label="User Profile"
-                    >
-                      {ProfileIcon}
-                    </NavLink>
-                  </motion.div>
+                    {ProfileIcon}
+                  </NavLink>
                 ) : (
                   <motion.div
                     key="register"
                     initial={{ opacity: 0, scale: 0.85, y: -8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.92, y: -8 }}
                     transition={{ duration: 0.22 }}
                   >
                     <NavLink
@@ -126,7 +143,6 @@ const Navbar: React.FC = () => {
                   </motion.div>
                 )
               )}
-            </AnimatePresence>
           </div>
 
           {/* Mobile menu button */}
@@ -135,7 +151,11 @@ const Navbar: React.FC = () => {
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
               className="text-gray-700 hover:text-red-600"
             >
-              {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
             </button>
           </div>
         </div>
@@ -160,32 +180,26 @@ const Navbar: React.FC = () => {
                   {item.name}
                 </NavLink>
               ))}
-              <AnimatePresence mode="wait">
-                {!isAuthPage && (
+
+              {!isAuthPage &&
+                authChecked && ( // ✅ Wait for auth check
                   isAuthenticated ? (
-                    <motion.div
-                      key="profile-mobile"
-                      initial={{ opacity: 0, scale: 0.85 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
-                      transition={{ duration: 0.2 }}
+                    <NavLink
+                      to="/profile"
+                      className="p-2 m-0 flex items-center"
+                      aria-label="User Profile"
+                      onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <NavLink
-                        to="/profile"
-                        className="p-2 m-0 flex items-center"
-                        aria-label="User Profile"
-                        onClick={() => setIsMobileMenuOpen(false)}
-                      >
-                        {ProfileIcon}
-                        <span className="ml-2 text-sm font-medium text-red-600">Profile</span>
-                      </NavLink>
-                    </motion.div>
+                      {ProfileIcon}
+                      <span className="ml-2 text-sm font-medium text-red-600">
+                        Profile
+                      </span>
+                    </NavLink>
                   ) : (
                     <motion.div
                       key="register-mobile"
                       initial={{ opacity: 0, scale: 0.85 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.9 }}
                       transition={{ duration: 0.2 }}
                     >
                       <NavLink
@@ -204,7 +218,6 @@ const Navbar: React.FC = () => {
                     </motion.div>
                   )
                 )}
-              </AnimatePresence>
             </div>
           </div>
         )}
