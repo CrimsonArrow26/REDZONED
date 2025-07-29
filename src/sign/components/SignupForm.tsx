@@ -15,10 +15,10 @@ interface SignupFormProps {
   onSwitchToLogin?: () => void;
 }
 
-export function SignupForm({ 
-  showPassword, 
-  showConfirmPassword, 
-  onTogglePassword, 
+export function SignupForm({
+  showPassword,
+  showConfirmPassword,
+  onTogglePassword,
   onToggleConfirmPassword,
   onSwitchToLogin
 }: SignupFormProps) {
@@ -27,6 +27,7 @@ export function SignupForm({
     lastName: '',
     email: '',
     phone: '',
+    aadhaarNumber: '',
     password: '',
     confirmPassword: ''
   });
@@ -41,12 +42,19 @@ export function SignupForm({
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
-    // Only check if passwords match, no other validation
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
+
+    if (!/^\d{12}$/.test(formData.aadhaarNumber)) {
+      setError('Aadhaar number must be exactly 12 digits');
+      return;
+    }
+
     setLoading(true);
+
     const { data, error } = await supabase.auth.signUp({
       email: formData.email,
       password: formData.password,
@@ -57,6 +65,7 @@ export function SignupForm({
         }
       }
     });
+
     if (error) {
       setError(error.message);
       setLoading(false);
@@ -66,10 +75,12 @@ export function SignupForm({
           id: data.user.id,
           email: formData.email,
           username: formData.firstName + ' ' + formData.lastName,
-          phone: formData.phone
+          phone: formData.phone,
+          aadhaar_number: formData.aadhaarNumber
         }
       ]);
       setLoading(false);
+
       if (insertError) {
         setError('Registration succeeded, but failed to save user details.');
       } else {
@@ -132,6 +143,7 @@ export function SignupForm({
             </div>
           </div>
         </div>
+
         <div className="mb-4">
           <Label htmlFor="email" className="block mb-1 font-medium">Email Address</Label>
           <div className="relative">
@@ -147,6 +159,7 @@ export function SignupForm({
             />
           </div>
         </div>
+
         <div className="mb-4">
           <Label htmlFor="phone" className="block mb-1 font-medium">Phone Number</Label>
           <div className="relative">
@@ -163,6 +176,24 @@ export function SignupForm({
             />
           </div>
         </div>
+
+        <div className="mb-4">
+          <Label htmlFor="aadhaarNumber" className="block mb-1 font-medium">Aadhaar Number</Label>
+          <div className="relative">
+            <Input
+              id="aadhaarNumber"
+              type="text"
+              placeholder="Enter your Aadhaar number"
+              className="pl-4 rounded-md border border-gray-200 focus:border-black focus:ring-2 focus:ring-black/10 bg-white text-base"
+              value={formData.aadhaarNumber}
+              onChange={handleChange}
+              onKeyPress={e => { if (!/[0-9]/.test(e.key)) e.preventDefault(); }}
+              maxLength={12}
+              required
+            />
+          </div>
+        </div>
+
         <div className="mb-4">
           <Label htmlFor="password" className="block mb-1 font-medium">Password</Label>
           <div className="relative">
@@ -179,6 +210,7 @@ export function SignupForm({
             />
           </div>
         </div>
+
         <div className="mb-4">
           <Label htmlFor="confirmPassword" className="block mb-1 font-medium">Confirm Password</Label>
           <div className="relative">
@@ -195,6 +227,7 @@ export function SignupForm({
             />
           </div>
         </div>
+
         <div className="flex items-start gap-3 text-sm mb-6">
           <input type="checkbox" className="mt-1 rounded border-gray-300 focus:ring-black" required />
           <span className="text-gray-600">
@@ -204,7 +237,9 @@ export function SignupForm({
             <a href="#" className="font-semibold text-black hover:underline">Privacy Policy</a>
           </span>
         </div>
+
         {error && <div className="text-red-500 text-sm">{error}</div>}
+
         <div className="mb-6">
           <div className="bg-red-600 rounded-md shadow-sm">
             <Button className="w-full bg-transparent text-white font-bold text-base py-3 hover:bg-red-700 focus:bg-red-700 border-none shadow-none" type="submit" disabled={loading}>
@@ -213,6 +248,7 @@ export function SignupForm({
           </div>
         </div>
       </form>
+
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t"></div>
@@ -221,6 +257,7 @@ export function SignupForm({
           <span className="px-4 bg-white">or continue with</span>
         </div>
       </div>
+
       <Button variant="outline" className="w-full" onClick={handleGoogleAuth} disabled={loading}>
         <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
           <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -230,10 +267,11 @@ export function SignupForm({
         </svg>
         Continue with Google
       </Button>
+
       <div className="text-center pt-4">
         <span>
           Already have an account?{' '}
-          <button 
+          <button
             onClick={onSwitchToLogin}
             className="font-medium"
           >
