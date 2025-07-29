@@ -3,6 +3,7 @@ body {
     margin: 0;
     font-family: 'Inter', sans-serif;
     background: #f8fafc;
+    user-selct: none;
   }
   
   .map-card-container {
