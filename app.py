@@ -20,7 +20,8 @@ NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 @app.route('/api/news')
 def get_news():
-    url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&q=crime%20in%20pune'
+    api_key = 'pub_c824623afeb34d20883fa0d4559aa4b6'  
+    url = f'https://newsdata.io/api/1/latest?apikey=pub_c824623afeb34d20883fa0d4559aa4b6&q=crime%20in%20pune'
 
     try:
         response = requests.get(url)
