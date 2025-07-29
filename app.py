@@ -1,6 +1,6 @@
 import os
 import requests
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from models import db, RedZone
@@ -10,18 +10,22 @@ load_dotenv()
 app = Flask(__name__)
 CORS(app)
 
+# Configure your database URI from environment variable
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
 NEWS_API_KEY = os.getenv("NEWS_API_KEY")
 
 @app.route('/api/news')
 def get_news():
-    api_key = 'pub_a48ee6eb1f014b57a406188f05877ea3'  
-    url = f'https://newsdata.io/api/1/latest?apikey=pub_a48ee6eb1f014b57a406188f05877ea3&q=crime%20in%20pune'
+    url = f'https://newsdata.io/api/1/latest?apikey={NEWS_API_KEY}&q=crime%20in%20pune'
 
     try:
         response = requests.get(url)
         data = response.json()
 
-        # Check if 'results' exists
         if "results" not in data:
             return jsonify([])
 
