@@ -152,6 +152,15 @@ const Reports: React.FC = () => {
     }
   };
 
+    const handleOpenReportModal = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      alert("Please log in to submit a report");
+      return;
+    }
+    setIsModalOpen(true);
+  };
+
   // Submit Report
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -294,7 +303,7 @@ const Reports: React.FC = () => {
           </button>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={handleOpenReportModal}
           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-xl shadow-md hover:bg-blue-700 transition"
         >
           <Plus size={18} /> Report Incident
