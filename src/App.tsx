@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer"; // ✅ Add import!
-import HomePage from "./HomePage";
+import HomePage from "./Homepage";
 import { AuthPage } from "./sign/components/AuthPage";
 import AuthCallback from "./AuthCallback";
 import News from "./News";
