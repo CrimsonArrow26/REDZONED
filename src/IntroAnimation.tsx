@@ -25,26 +25,27 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
     });
 
     tl.to(ripple, {
-      scale: 4.5,
+      scale: 5.5,
       opacity: 0,
       duration: 1.6
     })
-      .to(
-        center,
-        {
-          scale: 1.6,
-          duration: 0.4,
-          yoyo: true,
-          repeat: 1,
-          ease: "power1.inOut"
-        },
-        "-=1.2"
-      )
+    .to(
+      center,
+      {
+        scale: 2.2,
+        duration: 0.4,
+        yoyo: true,
+        repeat: 1,
+        ease: "power1.inOut"
+      },
+      "-=1.2"
+    )
+    
       // Horizontal line slight stretch
       .to(
         lineH,
         {
-          scaleX: 1.655, // 5% larger than the center circle
+          scaleX: 2.45, // 5% larger than the center circle
           duration: 0.6,
           ease: "power2.out"
         },
@@ -66,9 +67,9 @@ const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) => {
         particles,
         {
           opacity: 1,
-          x: () => (Math.random() - 0.5) * 200,
-          y: () => (Math.random() - 0.5) * 200,
-          scale: 0.6,
+          x: () => (Math.random() - 0.5) * 350,
+          y: () => (Math.random() - 0.5) * 350,
+          scale: 0.8,
           duration: 1,
           stagger: 0.05,
           ease: "power3.out"

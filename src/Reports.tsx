@@ -19,8 +19,6 @@ interface Report {
   latitude: number;
   longitude: number;
   date: string;
-  // status: "pending" | ... -- REMOVED, not present in DB
-  // Add any other DB fields you wish to show here
   type?: string;
   severity?: string;
   anonymous?: boolean;
@@ -53,7 +51,6 @@ const Reports: React.FC = () => {
   const [reports, setReports] = useState<Report[]>([]);
   const [redZones, setRedZones] = useState<RedZone[]>([]);
   const [loading, setLoading] = useState(true);
-  // Filter disables (status not in DB), keep only "all"
   const [filter, setFilter] = useState<"all">("all");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -71,7 +68,6 @@ const Reports: React.FC = () => {
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Categories for dropdown (now used as type in supabase)
   const categories = [
     "Theft",
     "Abuse",
@@ -82,7 +78,6 @@ const Reports: React.FC = () => {
   ];
   const severities = ["Low", "Medium", "High"];
 
-  // Fetch user reports and red zones
   useEffect(() => {
     async function fetchReportsAndZones() {
       setLoading(true);
@@ -106,7 +101,6 @@ const Reports: React.FC = () => {
     fetchReportsAndZones();
   }, []);
 
-  // No filtering by status (not present in DB)
   const filteredReports = reports;
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,7 +111,6 @@ const Reports: React.FC = () => {
     }
   };
 
-  // Auto-fill geolocation
   const handleGetLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -136,7 +129,6 @@ const Reports: React.FC = () => {
     }
   };
 
-  // Handle red zone selection
   const handleRedZoneSelect = (redZoneId: string) => {
     setFormData({ ...formData, redZoneId });
     if (redZoneId) {
@@ -152,7 +144,7 @@ const Reports: React.FC = () => {
     }
   };
 
-    const handleOpenReportModal = async () => {
+  const handleOpenReportModal = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       alert("Please log in to submit a report");
@@ -161,7 +153,6 @@ const Reports: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  // Submit Report
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -175,7 +166,6 @@ const Reports: React.FC = () => {
         return;
       }
 
-      // Upload images
       const imageUrls: string[] = [];
       for (const file of selectedFiles) {
         const path = `${user.id}/${Date.now()}_${file.name}`;
@@ -186,7 +176,6 @@ const Reports: React.FC = () => {
         if (signed) imageUrls.push(signed.signedUrl);
       }
 
-      // Check for existing red zone within 1km
       const { data: zones } = await supabase.from("red_zones").select("*");
       let foundZone = null;
       if (zones) {
@@ -205,7 +194,6 @@ const Reports: React.FC = () => {
       }
       let redZoneId = formData.redZoneId;
       if (foundZone) {
-        // Update incident count and risk level
         const newCount = (foundZone.incident_count || 0) + 1;
         let newRisk = "low";
         if (newCount > 40) newRisk = "high";
@@ -217,7 +205,6 @@ const Reports: React.FC = () => {
         }).eq("id", foundZone.id);
         redZoneId = foundZone.id;
       } else {
-        // Create new red zone
         const { data: newZone } = await supabase.from("red_zones").insert({
           name: formData.title || `Zone at (${formData.latitude}, ${formData.longitude})`,
           latitude: formData.latitude,
@@ -229,7 +216,6 @@ const Reports: React.FC = () => {
         if (newZone) redZoneId = newZone.id;
       }
 
-      // Insert record in incidents (NO status field!)
       const { error: insertError } = await supabase.from("incidents").insert([{
         user_id: user.id,
         title: formData.title,
@@ -238,17 +224,15 @@ const Reports: React.FC = () => {
         longitude: parseFloat(formData.longitude),
         image_urls: imageUrls,
         red_zone_id: redZoneId,
-        type: formData.type || formData.title, // send selected category as 'type'
+        type: formData.type || formData.title,
         severity: formData.severity || "Low",
         anonymous: !!formData.anonymous,
-        // Do NOT include status here (not in table)
       }]);
 
       if (insertError) {
         alert("Failed to submit report");
       } else {
         alert("Report submitted successfully!");
-        // Refetch immediately
         setLoading(true);
         const { data: { user: refetchUser } } = await supabase.auth.getUser();
         if (refetchUser) {
@@ -259,7 +243,6 @@ const Reports: React.FC = () => {
             .order("created_at", { ascending: false });
           if (!error) setReports(data || []);
         }
-        // Reset form/modal after modal closes
         setIsModalOpen(false);
         setTimeout(() => {
           setFormData({
@@ -288,7 +271,6 @@ const Reports: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Navbar activePage="reports" />
-      {/* Filter + Button (status disabled for now) */}
       <div className="flex justify-between items-center px-6 mt-20">
         <div className="flex gap-3">
           <button
@@ -309,6 +291,9 @@ const Reports: React.FC = () => {
           <Plus size={18} /> Report Incident
         </button>
       </div>
+
+export default Reports;
+
       {/* Reports List */}
       <div className="px-6 py-6">
         {loading ? (
@@ -526,3 +511,4 @@ const Reports: React.FC = () => {
 };
 
 export default Reports;
+

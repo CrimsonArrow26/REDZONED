@@ -23,7 +23,6 @@ import IntroAnimation from "./IntroAnimation"; // <-- Fixed this part
 import BlurText from "./components/BlurText";
 import Footer from "./components/Footer";
 
-
 interface Zone {
   id: string;
   name: string;
@@ -136,23 +135,33 @@ function HomePage() {
   return (
     <>
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-red-50">
-
         {/* Hero Section */}
         <div className="max-w-5xl mx-max-w-5xl mx-auto pt-40">
           <motion.div
             className="w-full text-center mb-[7rem]"
-            style={{ fontFamily: "'Hubot Sans'" }}
+            style={{ fontFamily: "'Archivo Black'" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
+           <div className="text-center">
             <BlurText
-              text={`TRANSFORMING SAFETY <br /> THROUGH TECHNOLOGY AND COMMUNITY.`}
+              text="Safer Communities"
               delay={0.08}
               animateBy="words"
               direction="top"
-              className="block overflow-visible text-center text-5xl font-bold text-red-600 tracking-wide"
+              className="block overflow-visible text-6xl font-[400] text-gray-800 tracking-wide"
             />
+            <br />
+            <BlurText
+              text="Smarter Tech."
+              delay={0.12}
+              animateBy="words"
+              direction="top"
+              className="block overflow-visible text-7xl font-normal text-red-600 tracking-wide"
+            />
+            </div>
+            
           </motion.div>
           <motion.div
             className="relative bg-white/50 backdrop-blur-md rounded-3xl p-8 shadow-2xl overflow-hidden"
@@ -270,8 +279,8 @@ function HomePage() {
               <div
                 key={index}
                 className={`group bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 ${isVisible
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 translate-y-8"
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 translate-y-8"
                   }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
@@ -423,10 +432,10 @@ function HomePage() {
                         <div className="flex items-center space-x-4">
                           <div
                             className={`w-3 h-3 rounded-full flex-shrink-0 ${zone.risk_level === "high"
-                              ? "bg-red-500"
-                              : zone.risk_level === "medium"
-                                ? "bg-orange-400"
-                                : "bg-green-500"
+                                ? "bg-red-500"
+                                : zone.risk_level === "medium"
+                                  ? "bg-orange-400"
+                                  : "bg-green-500"
                               }`}
                           />
                           <div>
@@ -443,10 +452,10 @@ function HomePage() {
                         </div>
                         <span
                           className={`px-3 py-1 text-xs font-semibold rounded-full ${zone.risk_level === "high"
-                            ? "bg-red-100 text-red-800"
-                            : zone.risk_level === "medium"
-                              ? "bg-orange-100 text-orange-800"
-                              : "bg-green-100 text-green-800"
+                              ? "bg-red-100 text-red-800"
+                              : zone.risk_level === "medium"
+                                ? "bg-orange-100 text-orange-800"
+                                : "bg-green-100 text-green-800"
                             }`}
                         >
                           {zone.risk_level.charAt(0).toUpperCase() +
