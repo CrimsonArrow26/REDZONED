@@ -22,7 +22,7 @@ const News: React.FC = () => {
 
   const fetchNews = async () => {
     try {
-      const res = await fetch("http://127.0.0.1:5000/api/news");
+      const res = await fetch("https://redzoned.onrender.com/api/news");
       const data = await res.json();
       setNews(data || []);
     } catch (err) {
